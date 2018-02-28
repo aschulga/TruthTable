@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Laba1Mrz</title>
+    <script src='file.js'></script>
+
+    <script>
+        window.onload = createStackString;
+    </script>
+
+    <style>
+        table{
+            border-collapse: collapse;<!-- чтобы не было промежутков между линиями -->
+        }
+        td{
+            border: 1px solid black; <!-- границы в 1px, сплошная черная линия -->
+            padding: 3px; <!-- внутренний отступ у ячеек таблицы -->
+            text-align:right; <!-- выравнивание текста по центру -->
+        }
+        .yellow{
+            background-color: yellow; <!-- жёлтый фон -->
+            font-weight: bold; <!-- жирное начертание -->
+            text-align: center; <!-- выравнивание текста по центру -->
+        }
+    </style>
+
+</head>
+<body>
+<p><strong>Строка:</strong></p>
+
+<p id = "logic"></p>
+
+<button onclick = "refresh()">Заменить строку</button>
+
+<p><input id="text" size = "20" placeholder="Введите строку"/></p>
+
+<button onclick = "newRefresh()">Заменить строку на введенную</button>
+
+<p><strong>Строка является формулой?</strong></p>
+
+<p><label>Да<input type="radio" id = "t1" name = "a" checked></label></p>
+<p><label>Нет<input type="radio" id = "t2" name = "a"></label></p>
+
+<button onclick = "test()">Проверить</button>
+
+<p id = "correct"></p>
+<p id = "out"></p>
+
+</body>
+</html>
