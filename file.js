@@ -7,7 +7,6 @@ var stackOfElements = [];
 var stackResult = [];
 var stackString = [];
 var myString;
-var num = 0;
 var arrayNumbers = new Array();
 var table = document.createElement("table");
 
@@ -230,7 +229,7 @@ function findSymbols(element, massiv)
     }
 }
 
-function doBinary(number, numElements, stackValue)
+function  doBinary(number, numElements, stackValue)
 {
     while(Math.floor(number/2)!=0)
     {
@@ -264,19 +263,10 @@ function buildStackOfElements(newStr)
             stackOperation.push(newStr[i]);
         }
         else if (newStr[i] == ')') {
-
-            num = 0;
-
             while (stackOperation.length != 0 && stackOperation[stackOperation.length - 1] != '(') {
-                num++;
                 stackOfElements.push(stackOperation.pop());
             }
             stackOperation.pop();
-
-            if(num > 1) {
-                correct = false;
-                break;
-            }
         }
         else if (newStr[i].match(/[A-Z]/g) || newStr[i].match(/[01]/g)) {
 
@@ -342,7 +332,6 @@ function createTable(numRows, numCol)
 function main(newStr)
 {
     buildStackOfElements(newStr);
-
     var commonStack = [];
 
     for(i = 0; i < Math.pow(2, array.length); i++)
@@ -350,7 +339,6 @@ function main(newStr)
         var stackValue = [];
         commonStack.push(doBinary(i, array.length, stackValue));
     }
-
     commonStack.reverse();
 
     for(k = 0; k < Math.pow(2, array.length); k++) {
@@ -372,26 +360,22 @@ function main(newStr)
         buildStackOfElements(newStr);
     }
 
-    if(correct) {
+    stackFormationTable.reverse();
+    createTable(Math.pow(2, array.length), array.length);
+    var value = stackResult[stackResult.length - 1];
 
-        stackFormationTable.reverse();
-        createTable(Math.pow(2, array.length), array.length);
-        var value = stackResult[stackResult.length - 1];
+    var boolNeutral = false;
 
-        var boolNeutral = false;
-
-        for (i = stackResult.length - 1; i >= 0; i--) {
-
-            if (stackResult[i] != value) {
-                boolNeutral = true;
-            }
+    for (i = stackResult.length - 1; i >= 0; i--) {
+        if (stackResult[i] != value) {
+            boolNeutral = true;
         }
+    }
 
-        if(boolNeutral)
-            document.getElementById('out').innerHTML = 'Логическая формула <strong>является нейтральной.</strong>';
-        else {
-            document.getElementById('out').innerHTML = 'Логическая формула <strong>не является нейтральной.</strong>';
-        }
+    if(boolNeutral)
+        document.getElementById('out').innerHTML = 'Логическая формула <strong>является нейтральной.</strong>';
+    else {
+        document.getElementById('out').innerHTML = 'Логическая формула <strong>не является нейтральной.</strong>';
     }
 }
 
@@ -407,71 +391,35 @@ function deleteAll()
 
 function test()
 {
-    correct = true;
-    var testImplication = true;
-    str = myString;
+    var str = myString;
+    var unary_formula = /\(\!([01]|[A-Z])\)/g;
+    var binary_formula = /\(([01]|[A-Z])([\&\|\~]|(\-\>))([01]|[A-Z])\)/g;
 
-    if(str.match(/[^01A-Z!&|\->~()]/g))
-        correct = false;
-    else {
+    while(str.match(unary_formula) || str.match(binary_formula)){
 
-        var newStr = str.split('');
-
-        for (i = 0; i < newStr.length; i++) {
-            if (newStr[i] == '>') {
-                if (newStr[i - 1] == '-')
-                    newStr[i - 1] = '';
-                else {
-                    testImplication = false;
-                    break;
-                }
-            }
-            else if (newStr[i] == '-' && newStr[i + 1] != '>') {
-                testImplication = false;
-                break;
-            }
-        }
-
-        var stackOpenBracket = [];
-        var stackCloseBracket = [];
-
-        var n = 0;
-
-        for (i = 0; i < newStr.length; i++) {
-            if (newStr[i] == '(') {
-                stackOpenBracket.push(newStr[i]);
-            }
-            else if (newStr[i] == ')') {
-                stackCloseBracket.push(newStr[i]);
-            }
-
-            if (newStr[i].match(/[!~|>&]/g)) {
-                n++;
-            }
-        }
-
-        if ((testImplication == false) || (stackOpenBracket.length != stackCloseBracket.length) || (stackOpenBracket.length != n) ||
-            str.match(/\)[!A-Z01]/g) || str.match(/[!|>~&]\)/g) || str.match(/\([\-~|&]/g) || str.match(/[A-Z01]\(/g) ||
-            str.match(/\(([A-Z]|[01])*\)/g) || str.match(/\)\(/g) || str.match(/([A-Z]|[01]){2,}/g) || (str.indexOf(')') < str.indexOf('(')) ||
-            str.match(/([A-Z]|[01])!([A-Z]|[01])/g)) {
-            correct = false;
-        }
-        else {
-            table.innerHTML = '';
-            main(newStr);
-        }
+        if(str.match(unary_formula))
+            str = str.replace(unary_formula, "1");
+        else
+            str = str.replace(binary_formula, "1");
     }
 
     var elements = document.getElementsByName('a');
     document.getElementById('correct').innerHTML = '<strong>Ответ: </strong>';
 
-    if(correct)
+    table.innerHTML = '';
+    document.getElementById('out').innerHTML = '';
+
+    if(str.length == 1 && str.match(/[01]|[A-Z]/g))
     {
         if(elements[0].checked)
             document.getElementById('correct').innerHTML += 'Правильно. Строка <strong>'+ myString  +'</strong> является формулой логики высказываний.';
 
         if(elements[1].checked)
             document.getElementById('correct').innerHTML += 'Неправильно. Строка <strong>'+ myString  +'</strong> является формулой логики высказываний.';
+
+        var replaceStr = myString.replace(/(\-\>)/g,">");
+        var newStr = replaceStr.split('');
+        main(newStr);
     }
     else
     {
@@ -480,9 +428,6 @@ function test()
 
         if(elements[1].checked)
             document.getElementById('correct').innerHTML += 'Правильно. Строка <strong>'+ myString  +'</strong> не является формулой логики высказываний.';
-
-        table.innerHTML = '';
-        document.getElementById('out').innerHTML = '';
     }
 
     deleteAll();
