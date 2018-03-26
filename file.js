@@ -1,4 +1,3 @@
-var correct = true;
 var array = new Array();
 var firstRow = [];
 var stackFormationTable = [];
@@ -62,21 +61,6 @@ function newRefresh()
         myString = document.getElementById('text').value;
         document.getElementById('logic').innerHTML = myString;
     }
-}
-
-function getPriority(s)
-{
-    var number;
-
-    if(s == '~')
-        number = 1;
-    else if(s == '>')
-        number = 2;
-    else if(s == '|')
-        number = 3;
-    else if(s == '&')
-        number = 4;
-    return number;
 }
 
 function isUnaryOperation(operation)
@@ -263,7 +247,7 @@ function buildStackOfElements(newStr)
             stackOperation.push(newStr[i]);
         }
         else if (newStr[i] == ')') {
-            while (stackOperation.length != 0 && stackOperation[stackOperation.length - 1] != '(') {
+            while (stackOperation[stackOperation.length - 1] != '(') {
                 stackOfElements.push(stackOperation.pop());
             }
             stackOperation.pop();
@@ -276,11 +260,6 @@ function buildStackOfElements(newStr)
             stackOfElements.push(newStr[i]);
         }
         else if (newStr[i].match(/[~>&|]/g)) {
-
-            while (stackOperation.length != 0 && (stackOperation[stackOperation.length - 1].match(/~>&|/g))
-            && getPriority(newStr[i]) < getPriority(stackOperation[stackOperation.length - 1])) {
-                stackOfElements.push(stackOperation.pop());
-            }
             stackOperation.push(newStr[i]);
         }
         else if (isUnaryOperation(newStr[i])) {
